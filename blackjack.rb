@@ -7,9 +7,12 @@ name = gets.chomp
 puts
 
 begin
+
   VALUES = [2,3,4,5,6,7,8,9,"Kings", "Queens", "Jacks", "Ace"]
   SUITS = ["of Hearts", "of Spades", "of Clubs", "of Diamonds"]
-    
+   
+  system "clear"
+
   first_card = VALUES.product(SUITS).sample
   second_card = VALUES.product(SUITS).sample
 
@@ -40,48 +43,55 @@ begin
     total = check_first_player_card + check_second_player_card
   end
  
-  system "clear"
-    
-  print "You got #{first_card.join(" ")} and #{second_card.join(" ")}. Your total so far is #{total}."
-  puts
-  begin
+  if total == 21
+    puts "#{name} has BlackJack!"
+  else
+
+    print "You got #{first_card.join(" ")} and #{second_card.join(" ")}. Your total so far is #{total}."
     puts
-    puts "Do you want another card? Yes (y) or No (n):"
-    decision = gets.chomp
-    extra_card = VALUES.product(SUITS).sample
-    check_extra_card = extra_card[0].to_i
-    if decision == "y"
-      if extra_card[0] == "Ace"
-        check_extra_card = extra_card[0].to_i
-        new_extra_card = check_extra_card + 11
-        new_total = total + new_extra_card
-        if new_total > 21
-          temp_total = new_total - 10
-          new_total = temp_total
-        end
-        puts
-        puts "Your new card is #{extra_card.join(" ")}. Your new total is #{new_total}." 
-        total = new_total
-      elsif check_extra_card == 0
-        new_check_extra_card = check_extra_card + 10
-        new_total = total + new_check_extra_card
-        puts
-        puts "Your new card is #{extra_card.join(" ")}. Your new total is #{new_total}."
-        total = new_total
-      elsif check_extra_card != 0
-        new_total = total + check_extra_card
-        puts
-        puts "Your new card is #{extra_card.join(" ")}. Your new total is #{new_total}." 
-        total = new_total
-      end 
-    end
-    if total > 21
-      puts "Busted!"
-        break
-    elsif total == 21
-      puts "21! Awesome!"
-    end
-  end until decision == "n" or total == 21 or total > 21
+ 
+    begin
+      puts
+      puts "Do you want another card? Yes (y) or No (n):"
+      decision = gets.chomp
+      extra_card = VALUES.product(SUITS).sample
+      check_extra_card = extra_card[0].to_i
+      if decision == "y"
+        if extra_card[0] == "Ace"
+          check_extra_card = extra_card[0].to_i
+          new_extra_card = check_extra_card + 11
+          new_total = total + new_extra_card
+          if new_total > 21
+            temp_total = new_total - 10
+            new_total = temp_total
+          end
+          puts
+          puts "Your new card is #{extra_card.join(" ")}. Your new total is #{new_total}." 
+          total = new_total
+        elsif check_extra_card == 0
+          new_check_extra_card = check_extra_card + 10
+          new_total = total + new_check_extra_card
+          puts
+          puts "Your new card is #{extra_card.join(" ")}. Your new total is #{new_total}."
+          total = new_total
+        elsif check_extra_card != 0
+          new_total = total + check_extra_card
+          puts
+          puts "Your new card is #{extra_card.join(" ")}. Your new total is #{new_total}." 
+          total = new_total
+        end 
+      end
+      if total > 21
+        puts "Busted!"
+          break
+      elsif total == 21
+        puts "21! Awesome!"
+          break 
+      end
+
+    end until decision == "n" or total == 21 or total > 21
+  end  
+
     
   first_pc_card = VALUES.product(SUITS).sample
   second_pc_card = VALUES.product(SUITS).sample
@@ -94,7 +104,7 @@ begin
 
   if first_pc_card[0] == "Ace"  
     check_first_pc_player_card = first_pc_card[0].to_i
-    first_computer_card = check_first_player_card + 11
+    first_computer_card = check_first_pc_card + 11
   elsif second_card[0] == "Ace"
     check_second_pc_card = second_pc_card[0].to_i 
     second_computer_card = check_second_pc_card + 11
