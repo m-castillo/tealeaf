@@ -58,21 +58,29 @@ begin
   puts
   
   if new_total == 21
-      puts "BlackJack! Congratulations!"
+      puts "*---- BlackJack! Congratulations! ----*"
   end
   
   begin
-    puts "#{name} now got #{new_total}."
+    puts
+    puts "*---- #{name} now got #{new_total}. ----*"
     puts
     puts "Do you want another card?"
     decision = gets.chomp
 
     if decision == "y"
-      puts
-      total = extra_card + new_total
-      new_total = total
+      puts  
+       if new_total >= 11 and (extra_card == 11)
+         total_ace = extra_card + new_total
+         new_total = total_ace - 10
+      elsif 
+         total = extra_card + new_total
+         new_total = total
+     end
     elsif decision == "n" and new_total < 21
+      puts
       puts "Wise decision."
+      puts
       puts "Alright. Computer turn"
       puts
     end
@@ -84,6 +92,9 @@ begin
     end   
   end until decision != "y" or new_total == 21
   
+  puts
+  puts "*---- Now you have #{new_total}. ----*"
+  puts
   puts "Now it's Computer's turn."
   puts
 
@@ -111,20 +122,20 @@ begin
   elsif new_total > 21
     sleep(1)
     puts
-    puts "Computer feels fine with #{ai_new_total}."
+    puts "*---- Computer feels fine with #{ai_new_total}. ----*"
   end
 
   sleep (1)    
   if (new_total > ai_new_total) and (new_total <= 21) 
     puts
-    puts "#{name} has won."
+    puts "*---- #{name} has won. ----*"
   elsif (new_total < ai_new_total) and (ai_new_total <= 21)
-    puts "Computer has won."
+    puts "*---- Computer has won. ----*"
   elsif (new_total == ai_new_total) and (new_total < 21 and ai_new_total < 21)
     puts
-    puts "It's a tie."
+    puts "*---- It's a tie. ----*"
   elsif (new_total <= 21) and (ai_new_total > 21)
-    puts "#{name} has won."
+    puts "*---- #{name} has won. ----*"
   end
     
   puts
