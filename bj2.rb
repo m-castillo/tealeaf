@@ -2,7 +2,7 @@ system "clear"
 
 puts "Welcome to BlackJack!"
 puts "What's your name?"
-name = gets.chomp
+name = gets.chomp.capitalize
 
 VALUES = ["Ace",2,3,4,5,6,7,8,9,10,"Jacks","Queens","Kings"]
 SUITS = ["of Hearts", "of Diamonds", "of Clubs", "of Spades"]
@@ -65,10 +65,10 @@ begin
     puts
     puts "*---- #{name} now got #{new_total}. ----*"
     puts
-    puts "Do you want another card?"
+    puts "Do you want to Hit (h) or Stay (s)?"
     decision = gets.chomp
 
-    if decision == "y"
+    if decision == "h"
       puts  
        if new_total >= 11 and (extra_card == 11)
          total_ace = extra_card + new_total
@@ -77,7 +77,7 @@ begin
          total = extra_card + new_total
          new_total = total
      end
-    elsif decision == "n" and new_total < 21
+    elsif decision == "s" and new_total < 21
       puts
       puts "Wise decision."
       puts
@@ -90,7 +90,7 @@ begin
       puts
       break
     end   
-  end until decision != "y" or new_total == 21
+  end until decision != "h" or new_total == 21
   
   puts
   puts "*---- Now you have #{new_total}. ----*"
