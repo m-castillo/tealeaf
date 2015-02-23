@@ -1,17 +1,9 @@
-#Game
-
 class Game
   MOVES = {"p" => "Paper", "s" => "Scissors", "r" => "Rock"}
 # --------------------- PLAYER --------------------------------------
   class Player
-    def greet
-      puts "What's your name?"
-      @name = gets.chomp
-      puts "Alright, #{@name}. Choose 'p' for Paper, 'r' for Rock, and 's' for Scissors:"
-      @name
-    end
-
     def play
+       puts "Choose 'p' for Paper, 'r' for Rock, and 's' for Scissors:"
        @hand = gets.chomp
        unless MOVES.keys.include?(@hand)
         puts "Please enter 'p', 'r', or 's'."
@@ -19,7 +11,7 @@ class Game
       end
     end
 
-    def select
+    def player_choice
       MOVES.select {|key, value| key == @hand}.values.join(" ")
     end
   end
@@ -31,28 +23,33 @@ class Game
     end
   end
 # ------------------- GAME PLAY -----------------------------------
-  class Game_Play
-    attr_accessor :player, :computer, :name
+  class GamePlay
+    attr_reader :player, :computer, :name
+
+    def initialize
+      @player = Player.new
+      @computer = Computer.new
+    end
 
     def introduction_to_game
-      player = Player.new
-      computer = Computer.new
-      @name = player.greet
-      player.play
-      @player = player.select
-      @computer = computer.computer_choice
+      @player.play
+      @player_pick = @player.player_choice
+      @computer_pick = @computer.computer_choice
     end
     
     def compare_hands
-      puts "#{@name} chose #{@player} and Computer got #{@computer}."
-      if (@player ==  "Paper" && @computer == "Rock") || 
-         (@player == "Scissors" && @computer == "Paper") ||
-         (@player == "Rock" && @computer == "Scissors")
-        puts "#{@name} has won!"
-      elsif @computer == @player
-        puts "Tie!"
+      puts "Player chose #{@player_pick} and Computer got #{@computer_pick}."
+      if (@player_pick ==  "Paper" && @computer_pick == "Rock") || 
+         (@player_pick == "Scissors" && @computer_pick == "Paper") ||
+         (@player_pick == "Rock" && @computer_pick == "Scissors")
+        puts
+        puts "=> Player has won!"
+      elsif @computer_pick == @player_pick
+        puts
+        puts "=> Tie!"
       else
-        puts "Computer has won!"
+        puts
+        puts "=> Computer has won!"
       end
     end
   end
@@ -64,18 +61,29 @@ class Game
       if decision == "y"
         start
       else
+        puts
         puts "Thank you for playing!"
+        break
       end
     end until decision == "y" || decision == "n"
   end
 
+  def greet
+      puts "What's your name?"
+      name = gets.chomp.capitalize
+      puts
+      puts "Well, hello #{name}! Welcome to Paper/Rock/Scissors."
+      puts
+  end
+
   def start
-    gp = Game_Play.new
-    gp.introduction_to_game
-    gp.compare_hands
+    game_play = GamePlay.new
+    game_play.introduction_to_game
+    game_play.compare_hands
     another_round
   end
 end
 
 game = Game.new
+game.greet
 game.start
