@@ -1,5 +1,5 @@
 class Deck 
-SUITS = ["of Hearts", "of Diamonds", "of Spades", "of Clubs"]
+SUITS = ["Hearts", "Diamonds", "Spades", "Clubs"]
 VALUES = [2,3,4,5,6,7,8,9,10,"Jacks","Queen","King","Ace"]
 
   def cards
@@ -9,12 +9,11 @@ end
 
 module Hand
   def take_card
-    deck = Deck.new
-    @another_card = deck.cards.pop
+    Deck.new.cards.pop
   end
 
   def add_card
-    @cards << @another_card
+    @cards << take_card
   end
 
   def player_deck
@@ -41,7 +40,7 @@ module Hand
       end   
     end
 
-    @cards.select{|value| value[0] == "Ace"}.count.times do
+    @cards.select{|card| card[0] == "Ace"}.count.times do
       break if total <= 21
       total -= 10
     end
@@ -63,7 +62,7 @@ class Human
 
   def game_hand
     first_two_cards
-    another_card_human?
+    another_card
   end
 
   def greet
@@ -89,7 +88,7 @@ class Human
     puts
   end
 
-  def another_card_human?
+  def another_card
     begin
       puts "Do you want to Hit (h) or Stay (s)?"
       decision = gets.chomp
@@ -131,11 +130,11 @@ class Computer
     if @human.total_cards > 21
       puts "#{@name} stays at #{@total_cards}."
     else 
-      another_card_computer?
+      another_card
     end
   end
 
-  def another_card_computer?
+  def another_card
     begin
       if total_cards == 21
         puts "#{@name} has 21."
@@ -167,22 +166,22 @@ class Game
     puts
     puts "#{@human.name} got #{@human.total_cards} and #{@computer.name} got #{@computer.total_cards}."
     puts
-    if (@human.total_cards > @computer.total_cards) && ((@human.total_cards <= 21) and (@computer.total_cards <= 21))
+    if (@human.total_cards > @computer.total_cards) && ((@human.total_cards <= 21) && (@computer.total_cards <= 21))
       puts "=> #{@human.name} has won!"
       puts
-    elsif (@human.total_cards < @computer.total_cards) && ((@human.total_cards <= 21) and (@computer.total_cards <= 21))
+    elsif (@human.total_cards < @computer.total_cards) && ((@human.total_cards <= 21) && (@computer.total_cards <= 21))
       puts "=> #{@computer.name} has won!"
       puts
-    elsif (@human.total_cards == @computer.total_cards) && ((@human.total_cards <= 21) and (@computer.total_cards <= 21))
+    elsif (@human.total_cards == @computer.total_cards) && ((@human.total_cards <= 21) && (@computer.total_cards <= 21))
       puts "=> #{@human.name} and #{@computer.name} are even."
       puts
-    elsif (@human.total_cards > 21) and (@computer.total_cards <= 21)
+    elsif (@human.total_cards > 21) && (@computer.total_cards <= 21)
       puts "=> #{@computer.name} has won! #{@human.name} went over 21."
       puts
-    elsif (@human.total_cards <= 21) and (@computer.total_cards > 21)
+    elsif (@human.total_cards <= 21) && (@computer.total_cards > 21)
       puts "=> #{@human.name} has won. #{@computer.name} went over 21."
       puts
-    elsif (@human.total_cards > 21) and (@computer.total_cards > 21)
+    elsif (@human.total_cards > 21) && (@computer.total_cards > 21)
       puts "=> Both players have lost. #{@human.name} and #{@computer.name} went over 21."
       puts
     end
@@ -222,9 +221,3 @@ end
 game = Game.new
 game.intro
 game.game_logic
-
-
-
-    
-
-
