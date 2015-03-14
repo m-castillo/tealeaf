@@ -1,0 +1,31 @@
+<h1>Welcome to Pick 5!</h1>
+
+<p>
+  <strong>Instructions:</strong><br/>
+  Enter five numbers from 1 to 50.<br/>
+  The game will then compare your selections against the drawing.<br/>
+  The winning amount will be determined by matching your numbers and the drawing's.
+</p>
+<h4><%= session[:number_bank].join(" ") %></h4>
+<br/>
+<p>
+  Please pick a number:
+<% if @show_number_input %>
+  <form action="/player_choice" method="post">
+    <input type="text" name="player_number">
+    <br/>
+    <input type="submit" class="btn">
+  </form>
+<% end %>
+</p>
+
+<h4><%= session[:player_name] %>'s Picks:</h4>
+<h3><%= session[:player_number_bank].sort.join(", ") %></h3>
+
+<h4><%= @computer %></h4>
+<h3><%= session[:computer_number_bank].sort.join(", ") %></h3>
+
+<br/>
+
+<h4><%= @win_message %></h4>
+<h4><%= @match %></h4>
