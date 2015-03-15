@@ -9,7 +9,7 @@
 <% end %>
 
 <% if @bet_again %>
-  <p>You now have <%= session[:total_money] %>. Please enter your bet: </p>
+  <p>You now have $<%= session[:total_money] %>. Please enter your bet: </p>
   <div class="input-append">
     <form action="/player_bet_bj" method="post">
       <input class="span1" type="text" placeholder="Bet" name="player_bet_bj">
@@ -39,7 +39,6 @@
       </p>
     <% end %>
 </div>
-
 
 <div class="well well-small" id="box2">
   <h5><%= session[:player_name] %>'s cards: <p>Total card amount: <%= calculate_total(session[:player_cards]) %>. Your bet is $<%= session[:player_bet] %>.</p></h5>
