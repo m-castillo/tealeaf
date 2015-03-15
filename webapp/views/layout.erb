@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>MC's Blackjack</title>
+    <title>MC's Playroom</title>
     <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/application.css">
   </head>
@@ -11,22 +11,23 @@
       <div class="navbar-inner">
         <div class="container">
             <ul class="nav">
+              <li><a href="/">Main Menu</a></li>
               <li><a href="/new_player">New Player</a></li>
-              <li><a href="/">Blackjack</a></li>
+              <li><a href="/game">Blackjack</a></li>
               <li><a href="/pick_five">Pick 5</a></li>
             </ul>
         </div>
       </div>
     </div>
-
   <div class="container">
     <%if @error %>
       <div class="alert alert-error"><%=@error%></div>
-    <% end %>
+    <% end %> 
     <%if @success %>
       <div class="alert alert-success"><%=@success%></div>
     <% end %>
-      <%= yield %>
+    <%= yield %>
   </div>
+
   </body>
 </html>

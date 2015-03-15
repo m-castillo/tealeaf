@@ -10,3 +10,36 @@ form#stay_form {
 img.card_image {
   margin: 0px 10px 10px 0px;
 }
+
+#title, #initial_amount {
+  text-align: center;
+}
+
+.bet_message {
+  margin: 0 auto;
+}
+
+#initial_amount, .input-append {
+  float: left;
+  margin-left: 10px;
+}
+
+#choose_blackjack {
+  background-image: url(/images/bj.jpg);
+   -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  color: white;
+}
+
+#choose_pick5 {
+  background-image: url(/images/lottballs.jpg);
+   -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  color: white;
+}
+
+

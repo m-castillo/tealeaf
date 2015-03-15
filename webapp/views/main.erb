@@ -1,0 +1,32 @@
+<h1 id="title">Welcome to the Playroom</h1>
+<p>
+<div class="bet_message">
+  <p id="initial_amount"><%= @main %></p>
+  <% if @bet_box %>
+    <div class="input-append">
+      <form action="/player_bet" method="post">
+        <input class="span1" type="text" placeholder="Bet" name="player_bet">
+        <button class="btn btn-info" type="button submit">Bet!</button>
+      </form>
+    </div>
+  <% end %>
+</div>
+</p>
+<br/>
+<br/>
+
+<div class="hero-unit" id="choose_blackjack">
+  <h1>Blackjack</h1>
+  <p>Alright... Almost like Blackjack. Get closer to 21 than the dealer and win some fake bucks!</p>
+  <p>
+    <a href="/game" class="btn btn-primary btn-large">Play!</a>
+  </p>
+</div>
+
+<div class="hero-unit" id="choose_pick5">
+  <h1>Pick 5</h1>
+  <p>Like Powerball... minus the Powerball. If you get all 5 numbers correct, we* suggest you run and play those numbers! <small>(By "we", I mean me.)</small></p>
+  <p>
+    <a href="/pick_five" class="btn btn-primary btn-large">Play!</a>
+  </p>
+</div>

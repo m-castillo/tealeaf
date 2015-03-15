@@ -6,6 +6,38 @@ use Rack::Session::Cookie, :key => 'rack.session',
                            :path => '/',
                            :secret => 'hakuna matata' 
 
+get '/' do
+  if session[:player_name]
+    session[:total_money] = 200
+    redirect '/main'
+  else
+    redirect '/new_player'
+  end
+end
+
+get '/main' do
+  @bet_box = true
+  @main = "Your amount is $#{session[:total_money]}. How much do you want to bet?"
+  erb :main
+end
+
+post '/player_bet' do
+  session[:player_bet] = params[:player_bet].to_i
+  if session[:player_bet] > session[:total_money]
+    @error = "Please, enter an amount you can afford."
+    @bet_box = true
+    halt (erb :main)
+  else
+    @bet_box = false
+    @success = "Great. You have bet $#{session[:player_bet]}. Please select one of the games below."
+  end
+  erb :main
+end
+
+
+# -------------- BLACKJACK ---------------
+# For Pick-5 go to Line ------------------
+
 BLACKJACK = 21
 DEALER_MIN_HIT = 17
 
@@ -55,6 +87,34 @@ helpers do
   def play_again
     @play_again = true
   end
+
+  def win_bj
+    session[:total_money] += session[:player_bet]  
+  end
+
+  def lose
+    session[:total_money] -= session[:player_bet]
+  end
+
+  def win_p5_5
+    session[:total_money] += (session[:player_bet] * 10)
+  end
+
+  def win_p5_4
+    session[:total_money] += (session[:player_bet] * 7)
+  end
+
+  def win_p5_3
+    session[:total_money] += (session[:player_bet] * 4)
+  end
+
+  def win_p5_2
+    session[:total_money] += (session[:player_bet] * 2)
+  end
+
+  def win_p5_1
+    session[:total_money] += (session[:player_bet] * 1)
+  end
 end
 
 before do
@@ -80,7 +140,7 @@ post '/new_player' do
   end
   
   session[:player_name] = params[:player_name].capitalize
-  redirect '/game'
+  redirect '/main'
 end
 
 get '/game' do
@@ -104,11 +164,11 @@ post '/game/player/hit' do
   session[:player_cards] << session[:deck].pop
   player_total = calculate_total(session[:player_cards])
   if player_total == BLACKJACK
-    @success = "Alright! #{session[:player_name]} has blackjack!"
+    @success = "Alright! #{session[:player_name]} has 21! You now have #{win_bj}."
     @show_hit_or_stay_buttons = false
     play_again
   elsif calculate_total(session[:player_cards]) > BLACKJACK
-    @error = "#{session[:player_name]} went over 21. Busted with #{calculate_total(session[:player_cards])}."
+    @error = "#{session[:player_name]} went over 21. Busted with #{calculate_total(session[:player_cards])}. You now have #{lose}."
     @show_hit_or_stay_buttons = false
     play_again
   end
@@ -129,12 +189,12 @@ get '/game/dealer' do
   dealer_total = calculate_total(session[:dealer_cards])
 
   if dealer_total == BLACKJACK
-    @error = "Dealer got 21."
+    @error = "Dealer got 21. Your bet was #{session[:player_bet]}. You now have #{lose}."
     play_again
   elsif dealer_total >= DEALER_MIN_HIT && dealer_total < BLACKJACK
     redirect '/game/compare'
   elsif dealer_total > BLACKJACK
-    @success = "Dealer busted with #{calculate_total(session[:dealer_cards])}."
+    @success = "Dealer busted with #{calculate_total(session[:dealer_cards])}. Your bet was #{session[:player_bet]}. You now have #{win_bj}."
     play_again
   else
     @show_dealer_hit_button = true
@@ -155,16 +215,41 @@ get '/game/compare' do
   dealer_total = calculate_total(session[:dealer_cards])
 
   if player_total < dealer_total
-    @error = "#{session[:player_name]} has #{calculate_total(session[:player_cards])}. Dealer got #{calculate_total(session[:dealer_cards])}. Dealer has won."
+    @error = "#{session[:player_name]} has #{calculate_total(session[:player_cards])}. Dealer got #{calculate_total(session[:dealer_cards])}. Dealer has won. Your bet was #{session[:player_bet]}. You now have $#{lose}."
     play_again
   elsif player_total > dealer_total
-    @success = "#{session[:player_name]} has #{calculate_total(session[:player_cards])}. Dealer got #{calculate_total(session[:dealer_cards])}. #{session[:player_name]} has won!"
+    @success = "#{session[:player_name]} has #{calculate_total(session[:player_cards])}. Dealer got #{calculate_total(session[:dealer_cards])}. #{session[:player_name]} has won! Your bet was #{session[:player_bet]}. You now have $#{win_bj}."
     play_again
   else
     @success = "#{session[:player_name]} and Dealer tie."
     play_again
   end
 
+  erb :game
+end
+
+get '/another_bet' do
+  @play_again = false
+  @show_hit_or_stay_buttons = false
+  @bet_again = true
+  if session[:total_money] <= 10
+    redirect 'http://thegamblinghelpline.com'
+  end
+
+  erb :game
+end
+
+post '/player_bet_bj' do
+  session[:player_bet] = params[:player_bet_bj].to_i
+
+  if session[:player_bet] > session[:total_money]
+    @error = "Please, enter an amount you can afford."
+    @bet_again = true
+    halt (erb :main)
+  else
+    @bet_again = false
+    redirect '/game'
+  end
   erb :game
 end
 
@@ -180,6 +265,7 @@ get '/pick_five' do
 end
 
 get '/pick_play' do
+  @current_bet = true
   @show_number_input = true
   session[:number_bank] = []
   session[:computer_number_bank] = []
@@ -189,11 +275,13 @@ get '/pick_play' do
 end
 
 post '/player_choice' do
+  @show_number_input = true
+  @current_bet = true
   if params[:player_number].to_i > 50
-    @error = "Please, one of the numbers below."
+    @error = "Please, one of the numbers below. Below 50!"
     halt (erb :pick_five)
   elsif params[:player_number].to_i < 1
-    @error = "Please, one of the numbers below."
+    @error = "Please, one of the numbers below. Meaning 1 or above. "
     halt (erb :pick_five)
   end
 
@@ -203,6 +291,7 @@ end
 
 get '/player_game' do
   @show_number_input = true
+  @current_bet = true
   if (session[:player_number_bank].include? session[:player_number])
     @error = "Please enter one of the numbers below."
     session[:player_number_bank].delete(session[:player_number])
@@ -218,6 +307,7 @@ get '/player_game' do
 end
 
 get '/pick_computer' do
+  @current_bet = true
   @show_number_input = false
   @computer = "Computer Picks:"
   session[:ai_number_bank] = []
@@ -234,6 +324,7 @@ get '/pick_computer' do
 end
 
 get '/compare_numbers' do
+  @current_bet = true
   @show_number_input = false
   @computer = "Computer Picks:"
   winning_draw = session[:player_number_bank] & session[:computer_number_bank]
@@ -241,43 +332,51 @@ get '/compare_numbers' do
 
   win = winning_draw.sort.join(", ")
 
-
-
   if draw == 5
-    @success = "You better get to your closest 7/11 and play these numbers!"
+    @success = "You better get to your closest 7/11 and play these numbers! You won $#{session[:player_bet] * 10}. Your amount is now $#{win_p5_5}."
   elsif draw == 4
-    @success = "4 out of 5? Dang! I'd consider playing them for real."
+    @success = "4 out of 5? Dang! I'd consider playing them for real. You won $#{session[:player_bet] * 7}. Your amount is now $#{win_p5_4}."
   elsif draw == 3
-    @success = "Hey... 3 out of 5 is not that bad... but not that good, either."
+    @success = "Hey... 3 out of 5 is not that bad... but not that good, either. You won $#{session[:player_bet] * 4}. Your amount is now $#{win_p5_3}."
   elsif draw == 2
-    @error = "The Universe is shinning on you... because nothing else is."
+    @success = "Hey. Better than one, right? You won $#{session[:player_bet] * 2}. Your amount is now $#{win_p5_2}."
   elsif draw == 1
-    @error = "Huh. One number?"
+    @success = "One number. At least you recouped some dough. You won $#{session[:player_bet] * 1}. Your amount is now $#{win_p5_1}."
   elsif draw == 0 
-    @error = "Do yourself a favor: don't ever play lottery."
+    @error = "Do yourself a favor: don't ever play lottery. You know have $#{lose}."
   end
 
   if winning_draw.empty?
     @win_message = "You got ZERO matches."
   else
-    @win_message = "The winning numbers are #{win}."
+    @win_message = "Matched numbers: #{win}."
   end
 
-  @match = "#{session[:player_name]} has #{draw} numbers correct."
+  @match = "#{session[:player_name]} has #{draw} number(s) correct."
+
+  @play_again = true
+  erb :pick_five
+end
+
+get '/pick_five_bet' do
+  @bet_again = true
+  @computer = "Computer Picks:"
+  if session[:total_money] <= 10
+    redirect 'http://thegamblinghelpline.com'
+  end
 
   erb :pick_five
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+post '/player_bet_pick5' do
+  session[:player_bet] = params[:player_bet_pick5].to_i
+  if session[:player_bet] > session[:total_money]
+    @error = "Please, enter an amount you can afford."
+    @bet_again = true
+    halt (erb :pick_five)
+  else
+    @bet_again = false
+    redirect '/pick_five'
+  end
+  erb :pick_five
+end

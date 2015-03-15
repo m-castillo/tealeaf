@@ -1,23 +1,31 @@
-<h1>Welcome to Pick 5!</h1>
+<h1 id="title">Welcome to Pick 5!</h1>
 
 <p>
   <strong>Instructions:</strong><br/>
-  Enter five numbers from 1 to 50.<br/>
-  The game will then compare your selections against the drawing.<br/>
-  The winning amount will be determined by matching your numbers and the drawing's.
+  <ul>
+    <li>Enter five numbers from 1 to 50.</li>
+    <li>The game will then compare your selections against the drawing.</li>
+    <li>The winning amount will be determined by matching your numbers and the drawing's.</li>
+</ul>
 </p>
-<h4><%= session[:number_bank].join(" ") %></h4>
-<br/>
-<p>
-  Please pick a number:
-<% if @show_number_input %>
-  <form action="/player_choice" method="post">
-    <input type="text" name="player_number">
-    <br/>
-    <input type="submit" class="btn">
-  </form>
+<div class="alert alert-info">
+  <h4><%= session[:number_bank].join(" ") %></h4>
+</div>
+<% if @current_bet %>
+  <h6>Your current bet is $<%= session[:player_bet] %>.</h6>
 <% end %>
-</p>
+
+<% if @show_number_input %>
+  <p>
+    Please pick a number:
+    <form action="/player_choice" method="post">
+      <input type="text" name="player_number">
+      <br/>
+      <input type="submit" class="btn">
+    </form>
+  </p>
+<% end %>
+
 
 <h4><%= session[:player_name] %>'s Picks:</h4>
 <h3><%= session[:player_number_bank].sort.join(", ") %></h3>
@@ -27,5 +35,25 @@
 
 <br/>
 
-<h4><%= @win_message %></h4>
-<h4><%= @match %></h4>
+<h5><%= @win_message %> <%= @match %></h5>
+
+<br/>
+<br/>
+
+<% if @play_again %>
+  <p>
+    <strong>Play again?</strong>
+    <a href="/pick_five_bet" class="btn btn-primary">Yes</a>
+    <a href="/main" class="btn">No</a>
+  </p>
+<% end %>
+
+<% if @bet_again %>
+  <p>You know have $<%= session[:total_money] %>. How much do you want to bet?</p>
+    <div class="input-append">
+      <form action="/player_bet_pick5" method="post">
+        <input class="span2" id="appendedInputButton" placeholder="Enter amount" type="text" name="player_bet_pick5">
+        <button class="btn btn-info" type="button submit">Bet!</button>
+      </form>
+    </div>
+<% end %>
