@@ -88,7 +88,7 @@ helpers do
     @play_again = true
   end
 
-  def win_bj
+  def win_blackjack
     session[:total_money] += session[:player_bet]  
   end
 
@@ -96,37 +96,29 @@ helpers do
     session[:total_money] -= session[:player_bet]
   end
 
-  def win_p5_5
+  def pick_win_5_numbers
     session[:total_money] += (session[:player_bet] * 10)
   end
 
-  def win_p5_4
+  def pick_win_4_numbers
     session[:total_money] += (session[:player_bet] * 7)
   end
 
-  def win_p5_3
+  def pick_win_3_numbers
     session[:total_money] += (session[:player_bet] * 4)
   end
 
-  def win_p5_2
+  def pick_win_2_numbers
     session[:total_money] += (session[:player_bet] * 2)
   end
 
-  def win_p5_1
+  def pick_win_1_numbers
     session[:total_money] += (session[:player_bet] * 1)
   end
 end
 
 before do
   @show_hit_or_stay_buttons = true
-end
-
-get '/' do
-  if session[:player_name]
-    redirect '/game'
-  else
-    redirect '/new_player'
-  end
 end
 
 get '/new_player' do
@@ -164,7 +156,7 @@ post '/game/player/hit' do
   session[:player_cards] << session[:deck].pop
   player_total = calculate_total(session[:player_cards])
   if player_total == BLACKJACK
-    @success = "Alright! #{session[:player_name]} has 21! You now have #{win_bj}."
+    @success = "Alright! #{session[:player_name]} has 21! You now have #{win_blackjack}."
     @show_hit_or_stay_buttons = false
     play_again
   elsif calculate_total(session[:player_cards]) > BLACKJACK
@@ -194,7 +186,7 @@ get '/game/dealer' do
   elsif dealer_total >= DEALER_MIN_HIT && dealer_total < BLACKJACK
     redirect '/game/compare'
   elsif dealer_total > BLACKJACK
-    @success = "Dealer busted with #{calculate_total(session[:dealer_cards])}. Your bet was #{session[:player_bet]}. You now have #{win_bj}."
+    @success = "Dealer busted with #{calculate_total(session[:dealer_cards])}. Your bet was #{session[:player_bet]}. You now have #{win_blackjack}."
     play_again
   else
     @show_dealer_hit_button = true
@@ -218,7 +210,7 @@ get '/game/compare' do
     @error = "#{session[:player_name]} has #{calculate_total(session[:player_cards])}. Dealer got #{calculate_total(session[:dealer_cards])}. Dealer has won. Your bet was #{session[:player_bet]}. You now have $#{lose}."
     play_again
   elsif player_total > dealer_total
-    @success = "#{session[:player_name]} has #{calculate_total(session[:player_cards])}. Dealer got #{calculate_total(session[:dealer_cards])}. #{session[:player_name]} has won! Your bet was #{session[:player_bet]}. You now have $#{win_bj}."
+    @success = "#{session[:player_name]} has #{calculate_total(session[:player_cards])}. Dealer got #{calculate_total(session[:dealer_cards])}. #{session[:player_name]} has won! Your bet was #{session[:player_bet]}. You now have $#{win_blackjack}."
     play_again
   else
     @success = "#{session[:player_name]} and Dealer tie."
@@ -335,15 +327,15 @@ get '/compare_numbers' do
   win = winning_draw.sort.join(", ")
 
   if draw == 5
-    @success = "You better get to your closest 7/11 and play these numbers! You won $#{session[:player_bet] * 10}. Your amount is now $#{win_p5_5}."
+    @success = "You better get to your closest 7/11 and play these numbers! You won $#{session[:player_bet] * 10}. Your amount is now $#{pick_win_5_numbers}."
   elsif draw == 4
-    @success = "4 out of 5? Dang! I'd consider playing them for real. You won $#{session[:player_bet] * 7}. Your amount is now $#{win_p5_4}."
+    @success = "4 out of 5? Dang! I'd consider playing them for real. You won $#{session[:player_bet] * 7}. Your amount is now $#{pick_win_4_numbers}."
   elsif draw == 3
-    @success = "Hey... 3 out of 5 is not that bad... but not that good, either. You won $#{session[:player_bet] * 4}. Your amount is now $#{win_p5_3}."
+    @success = "Hey... 3 out of 5 is not that bad... but not that good, either. You won $#{session[:player_bet] * 4}. Your amount is now $#{pick_win_3_numbers}."
   elsif draw == 2
-    @success = "Hey. Better than one, right? You won $#{session[:player_bet] * 2}. Your amount is now $#{win_p5_2}."
+    @success = "Hey. Better than one, right? You won $#{session[:player_bet] * 2}. Your amount is now $#{pick_win_2_numbers}."
   elsif draw == 1
-    @success = "One number. At least you recouped some dough. You won $#{session[:player_bet] * 1}. Your amount is now $#{win_p5_1}."
+    @success = "One number. At least you recouped some dough. You won $#{session[:player_bet] * 1}. Your amount is now $#{pick_win_1_numbers}."
   elsif draw == 0 
     @error = "Do yourself a favor: don't ever play lottery. You know have $#{lose}."
   end
