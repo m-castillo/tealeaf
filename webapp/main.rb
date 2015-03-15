@@ -35,8 +35,8 @@ post '/player_bet' do
 end
 
 
-# -------------- BLACKJACK ---------------
-# For Pick-5 go to Line ------------------
+# --------------- BLACKJACK ---------------
+# -------- For Pick-5 go to Line 260 ------
 
 BLACKJACK = 21
 DEALER_MIN_HIT = 17
@@ -257,7 +257,9 @@ get '/game_over' do
   erb :game_over
 end
 
-# ------------------------------ PICK 5 GAME -------------------
+# -------------------- PICK 5 GAME ----------------------------
+# --------------For Blackjack go to Line 38 -------------------
+
 
 get '/pick_five' do
   redirect '/pick_play'
