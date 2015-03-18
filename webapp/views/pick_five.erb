@@ -26,9 +26,9 @@
     <p>
       Please pick a number:
       <form id="player_picks" action="/player_choice" method="post">
-        <input  id="player_submits" type="text" name="player_number">
+        <input type="text" name="player_number">
         <br/>
-        <input type="submit" class="btn">
+        <input id="player_submit" type="submit" class="btn">
       </form>
     </p>
   <% end %>
@@ -46,7 +46,7 @@
   <div class="picks">
     <h4><%= @computer %></h4>
     <% session[:computer_number_bank].sort.each do |ball| %>
-      <div class="ball" id="computer_balls"> <% sleep (0.5) %><%= ball %> </div>
+      <div class="ball" id="computer_balls"><%= ball %> </div>
   <% end %>
   </div>
   <br/>

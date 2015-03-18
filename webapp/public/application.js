@@ -56,12 +56,31 @@ function play_again() {
   });
 }
 
-
-
 // PICK 5 AJAX ----------- FOR BLACKJACK GO TO LINE
 
+function play_again() {
+  $(document).on("click", "a#play_again_blackjack", function() {
+    $.ajax({
+      type: "GET",
+      url: "/another_bet"
+    }).done(function(msg) {
+      $("#game").replaceWith(msg)
+    });
+    return false;
+  });
+}
 
 
 // go to start from the top... pick_five
 
-
+function player_numbers() {
+  $(document).on("click", "form#player_picks input#player_submit", function() {
+    $.ajax({
+      type: "GET",
+      url: "/player_choice"
+    }).done(function(msg) {
+      $("#pick5").replaceWith(msg)
+    });
+    return false;
+  });
+}
