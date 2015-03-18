@@ -3,6 +3,7 @@ $(document).ready(function() {
   player_stays();
   play_again();
   dealer_hit();
+  player_numbers();
 
 });
 
@@ -76,7 +77,7 @@ function play_again() {
 function player_numbers() {
   $(document).on("click", "form#player_picks input#player_submit", function() {
     $.ajax({
-      type: "GET",
+      type: "POST",
       url: "/player_choice"
     }).done(function(msg) {
       $("#pick5").replaceWith(msg)
