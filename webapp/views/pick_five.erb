@@ -1,59 +1,79 @@
-<h1 id="title">Welcome to Pick 5!</h1>
+<div id="pick5">
+  <h1 id="title">Welcome to Pick 5!</h1>
 
-<p>
-  <strong>Instructions:</strong><br/>
-  <ul>
-    <li>Enter five numbers from 1 to 50.</li>
-    <li>The game will then compare your selections against the drawing.</li>
-    <li>The winning amount will be determined by matching your numbers and the drawing's.</li>
-</ul>
-</p>
-<div class="alert alert-info">
-  <h4><%= session[:number_bank].join(" ") %></h4>
-</div>
-<% if @current_bet %>
-  <h6>Your current bet is $<%= session[:player_bet] %>.</h6>
-<% end %>
-
-<% if @show_number_input %>
   <p>
-    Please pick a number:
-    <form action="/player_choice" method="post">
-      <input type="text" name="player_number">
-      <br/>
-      <input type="submit" class="btn">
-    </form>
+    <%if @error %>
+      <div class="alert alert-error"><%=@error%></div>
+    <% end %> 
+    <%if @success %>
+    <div class="alert alert-success"><%=@success%></div>
+    <% end %>
+    <strong>Instructions:</strong><br/>
+    <ul>
+      <li>Enter five numbers from 1 to 50.</li>
+      <li>The game will then compare your selections against the drawing.</li>
+      <li>The winning amount will be determined by matching your numbers and the drawing's.</li>
+  </ul>
   </p>
-<% end %>
+  <div class="alert alert-info">
+    <h4><%= session[:number_bank].join(" ") %></h4>
+  </div>
+  <% if @current_bet %>
+    <h6>Your current bet is $<%= session[:player_bet] %>.</h6>
+  <% end %>
 
-
-<h4><%= session[:player_name] %>'s Picks:</h4>
-<h3><%= session[:player_number_bank].sort.join(", ") %></h3>
-
-<h4><%= @computer %></h4>
-<h3><%= session[:computer_number_bank].sort.join(", ") %></h3>
-
-<br/>
-
-<h5><%= @win_message %> <%= @match %></h5>
-
-<br/>
-<br/>
-
-<% if @play_again %>
-  <p>
-    <strong>Play again?</strong>
-    <a href="/pick_five_bet" class="btn btn-primary">Yes</a>
-    <a href="/main" class="btn">No</a>
-  </p>
-<% end %>
-
-<% if @bet_again %>
-  <p>You know have $<%= session[:total_money] %>. How much do you want to bet?</p>
-    <div class="input-append">
-      <form action="/player_bet_pick5" method="post">
-        <input class="span2" id="appendedInputButton" placeholder="Enter amount" type="text" name="player_bet_pick5">
-        <button class="btn btn-info" type="button submit">Bet!</button>
+  <% if @show_number_input %>
+    <p>
+      Please pick a number:
+      <form id="player_picks" action="/player_choice" method="post">
+        <input  id="player_submits" type="text" name="player_number">
+        <br/>
+        <input type="submit" class="btn">
       </form>
-    </div>
-<% end %>
+    </p>
+  <% end %>
+
+  <div class="picks">
+    <h4><%= session[:player_name] %>'s Picks:</h4>
+    <% session[:player_number_bank].sort.each do |ball| %>
+      <div class="ball" id="player_balls"> <%= ball %> </div>
+    <% end %>
+  </div>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <div class="picks">
+    <h4><%= @computer %></h4>
+    <% session[:computer_number_bank].sort.each do |ball| %>
+      <div class="ball" id="computer_balls"> <% sleep (0.5) %><%= ball %> </div>
+  <% end %>
+  </div>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <h5><%= @win_message %> <%= @match %></h5>
+
+  <br/>
+  <br/>
+
+  <% if @play_again %>
+    <p>
+      <strong>Play again?</strong>
+      <a href="/pick_five_bet" class="btn btn-primary">Yes</a>
+      <a href="/main" class="btn">No</a>
+    </p>
+  <% end %>
+
+  <% if @bet_again %>
+    <p>You know have $<%= session[:total_money] %>. How much do you want to bet?</p>
+      <div class="input-append">
+        <form action="/player_bet_pick5" method="post">
+          <input class="span2" id="appendedInputButton" placeholder="Enter amount" type="text" name="player_bet_pick5">
+          <button class="btn btn-info" type="button submit">Bet!</button>
+        </form>
+      </div>
+  <% end %>
+</div>

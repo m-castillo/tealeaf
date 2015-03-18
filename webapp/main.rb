@@ -16,8 +16,13 @@ get '/' do
 end
 
 get '/main' do
-  @bet_box = true
-  @main = "Your amount is $#{session[:total_money]}. How much do you want to bet?"
+  if session[:player_name]
+    session[:total_money] = 200
+    @bet_box = true
+    @main = "Your amount is $#{session[:total_money]}. How much do you want to bet?"
+  else
+    redirect '/new_player'
+  end
   erb :main
 end
 
@@ -136,18 +141,22 @@ post '/new_player' do
 end
 
 get '/game' do
-  session[:turn] = session[:player_name]
+  if session[:player_name]
+    session[:turn] = session[:player_name]
 
-  SUITS = ["H", "D", "C", "S"]
-  VALUES = [2,3,4,5,6,7,8,9,10,"J","Q","K","A"]
-  session[:deck] = SUITS.product(VALUES).shuffle!
+    SUITS = ["H", "D", "C", "S"]
+    VALUES = [2,3,4,5,6,7,8,9,10,"J","Q","K","A"]
+    session[:deck] = SUITS.product(VALUES).shuffle!
 
-  session[:dealer_cards] = []
-  session[:player_cards] = []
-  session[:dealer_cards] << session[:deck].pop
-  session[:player_cards] << session[:deck].pop
-  session[:dealer_cards] << session[:deck].pop
-  session[:player_cards] << session[:deck].pop
+    session[:dealer_cards] = []
+    session[:player_cards] = []
+    session[:dealer_cards] << session[:deck].pop
+    session[:player_cards] << session[:deck].pop
+    session[:dealer_cards] << session[:deck].pop
+    session[:player_cards] << session[:deck].pop
+  else
+    redirect '/new_player'
+  end
 
   erb :game
 end
@@ -159,12 +168,12 @@ post '/game/player/hit' do
     @success = "Alright! #{session[:player_name]} has 21! You now have #{win_blackjack}."
     @show_hit_or_stay_buttons = false
     play_again
-  elsif calculate_total(session[:player_cards]) > BLACKJACK
+  elsif player_total > BLACKJACK
     @error = "#{session[:player_name]} went over 21. Busted with #{calculate_total(session[:player_cards])}. You now have #{lose}."
     @show_hit_or_stay_buttons = false
     play_again
   end
-  erb :game
+  erb :game, layout: false
 end
 
 post '/game/player/stay' do
@@ -192,7 +201,7 @@ get '/game/dealer' do
     @show_dealer_hit_button = true
   end
 
-  erb :game
+  erb :game, layout: false 
 end
 
 post '/game/dealer/hit' do
@@ -217,7 +226,7 @@ get '/game/compare' do
     play_again
   end
 
-  erb :game
+  erb :game, layout: false
 end
 
 get '/another_bet' do
@@ -228,7 +237,7 @@ get '/another_bet' do
     redirect 'http://thegamblinghelpline.com'
   end
 
-  erb :game
+  erb :game, layout: false
 end
 
 post '/player_bet_bj' do
@@ -245,26 +254,22 @@ post '/player_bet_bj' do
   erb :game
 end
 
-get '/game_over' do
-  erb :game_over
-end
-
 # -------------------- PICK 5 GAME ----------------------------
 # --------------For Blackjack go to Line 38 -------------------
 
 
 get '/pick_five' do
-  redirect '/pick_play'
-  erb :pick_five
-end
-
-get '/pick_play' do
-  @current_bet = true
-  @show_number_input = true
-  session[:number_bank] = []
-  session[:computer_number_bank] = []
-  session[:player_number_bank] = []
-  (1..50).each {|value| session[:number_bank] << value }
+  if session[:player_name]
+    @current_bet = true
+    @show_number_input = true
+    session[:number_bank] = []
+    session[:computer_number_bank] = []
+    session[:player_number_bank] = []
+    (1..50).each {|value| session[:number_bank] << value }
+    erb :pick_five, layout: false
+  else
+    redirect '/new_player'
+  end
   erb :pick_five
 end
 
@@ -297,6 +302,7 @@ get '/player_game' do
   while session[:player_number_bank].length == 5
     redirect '/pick_computer'
   end
+
   erb :pick_five
 end
 
@@ -308,7 +314,6 @@ get '/pick_computer' do
   session[:computer_number_bank] = []
   (1..50).each { |value| session[:ai_number_bank] << value }
   begin
-    sleep(1)
     session[:computer_number_bank] << session[:ai_number_bank].sample
     session[:ai_number_bank].delete(session[:ai_number_bank].sample)
   end until session[:computer_number_bank].length == 5

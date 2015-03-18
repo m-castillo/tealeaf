@@ -41,3 +41,22 @@ img.card_image {
   background-size: cover;
   color: white;
 }
+
+.ball {
+  height: 80px;
+  width: 80px;
+  border-radius: 80px;
+  border-style: solid;
+  border-color: rgba(57, 132, 170, 1);
+  border-width: 3px;
+  text-align: center;
+  line-height: 80px;
+  margin-left: 10px;
+  font-size: 25px;
+  background-color: rgba(217, 237, 247, 1);
+  color: rgba(57, 132, 170, 1);
+}
+
+#player_balls, #computer_balls {
+  float: left;
+}

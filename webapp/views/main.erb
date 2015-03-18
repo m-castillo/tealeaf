@@ -1,20 +1,26 @@
 <h1 id="title">Welcome to the Playroom</h1>
-<p>
-<div class="bet_message">
-  <p id="initial_amount"><%= @main %></p>
-  <% if @bet_box %>
-    <div class="input-append">
-      <form action="/player_bet" method="post">
-        <input class="span1" type="text" placeholder="Bet" name="player_bet">
-        <button class="btn btn-info" type="button submit">Bet!</button>
-      </form>
-    </div>
-  <% end %>
-</div>
-</p>
-<br/>
-<br/>
 
+<% if @bet_box %>
+  <div class="bet_message">
+    <p id="initial_amount"><%= @main %></p>
+      <div class="input-append">
+        <form action="/player_bet" method="post">
+          <input class="span1" type="text" placeholder="Bet" name="player_bet">
+          <button class="btn btn-info" type="button submit">Bet!</button>
+        </form>
+      </div>
+  </div>
+<% end %>
+
+<%if @error %>
+  <div class="alert alert-error"><%=@error%></div>
+<% end %> 
+<%if @success %>
+  <div class="alert alert-success"><%=@success%></div>
+<% end %>
+
+<br/>
+<br/>
 <div class="hero-unit" id="choose_blackjack">
   <h1>Blackjack</h1>
   <p>Alright... Almost like Blackjack. Get closer to 21 than the dealer to win!</p>
