@@ -41,7 +41,7 @@ end
 
 
 # --------------- BLACKJACK ---------------
-# -------- For Pick-5 go to Line 260 ------
+# -------- For Pick-5 go to Line 258 ------
 
 BLACKJACK = 21
 DEALER_MIN_HIT = 17
@@ -255,7 +255,7 @@ post '/player_bet_bj' do
 end
 
 # -------------------- PICK 5 GAME ----------------------------
-# --------------For Blackjack go to Line 38 -------------------
+# --------------For Blackjack go to Line 40 -------------------
 
 
 get '/pick_five' do

@@ -3,8 +3,6 @@ $(document).ready(function() {
   player_stays();
   play_again();
   dealer_hit();
-  player_numbers();
-
 });
 
 // BLACKJACK AJAX --------- FOR PICK 5, GO TO LINE XXX
@@ -66,21 +64,6 @@ function play_again() {
       url: "/another_bet"
     }).done(function(msg) {
       $("#game").replaceWith(msg)
-    });
-    return false;
-  });
-}
-
-
-// go to start from the top... pick_five
-
-function player_numbers() {
-  $(document).on("click", "form#player_picks input#player_submit", function() {
-    $.ajax({
-      type: "POST",
-      url: "/player_choice"
-    }).done(function(msg) {
-      $("#pick5").replaceWith(msg)
     });
     return false;
   });
